@@ -1,74 +1,88 @@
-    module PrimeNumbers
+module PrimeNumbers
     implicit none
 
-    contains
-        logical function IsPrime(n) !n int, returns True/False
+contains
+    logical function IsPrime(n) !n int, returns True/False
 
-        integer :: n, i
+        integer, intent(in) :: n
+        integer :: i
 
-        if (n == 2 .or. n == 3 .or. n == 5 .or. n == 7) then
-            IsPrime = .true.
+        if(n <= 1) then
+            IsPrime = .false.
+            return
         end if
 
-        do i = 2, (n-1)
-            if (mod(n,i) == 0) then
+        if (n == 2 .or. n == 3) then
+            IsPrime = .true.
+            return
+        end if
+
+        if(mod(n,2) == 0 .or. mod(n,3) == 0) then
+            IsPrime = .false.
+            return
+        end if
+
+        i = 5
+        do while(i*i <= n)
+            if (mod(n,i) == 0 .or. mod(n,i+2) == 0) then
                 IsPrime = .false.
-                exit
-            else
-                IsPrime = .true.
+                return
             end if
+            i = i + 6
         end do
-        end function IsPrime
+        IsPrime = .true.
+        
+    end function IsPrime
 
-        integer function NextPrime(n) !returns prime number after n
+    integer function NextPrime(n) !returns prime number after n
 
-        integer :: n,n2
-        n2 = n+1
-        do while (IsPrime(n2) .eqv. .false.)
-            n2 = n2+1
+        integer, intent(in) :: n
+        integer :: candidate
+        candidate = n + 1
+        do while (.not. IsPrime(candidate))
+            candidate = candidate + 1
         end do
-        NextPrime = n2
+        NextPrime = candidate
 
-        end function NextPrime
+    end function NextPrime
 
-        integer function PreviousPrime(n) !returns previous prime
+    integer function PreviousPrime(n) !returns previous prime
 
-        integer :: n,n2
-        n2 = n-1
-        do while (IsPrime(n2) .eqv. .false.)
-            n2 = n2-1
+        integer, intent(in) :: n
+        integer :: candidate
+        candidate = n - 1
+        do while (.not. IsPrime(candidate))
+            candidate = candidate - 1
         end do
-        PreviousPrime = n2
+        PreviousPrime = candidate
 
-        end function PreviousPrime
+    end function PreviousPrime
 
     subroutine PrimeList(list_of_primes,n)
 
-    implicit none
-    integer, dimension(:), allocatable :: list_of_primes
-    integer :: i,j,n
+        implicit none
+        integer, dimension(:), allocatable, intent(out) :: list_of_primes
+        integer, intent(in) :: n
+        integer :: i
+        integer :: j
 
-    allocate(list_of_primes(n))
+        allocate(list_of_primes(n))
         j = 1
         do i=1,n
             list_of_primes(i) = NextPrime(j)
             j = NextPrime(j)
         end do
 
-    !print*, list_of_primes
-
-    return
-
     end subroutine PrimeList
 
-    end module PrimeNumbers
+end module PrimeNumbers
 
-    program Goldbach !r, p, and q all prime while p-r == q-p
+program Goldbach !r, p, and q all prime while p-r == q-p
 
     use PrimeNumbers
-
     implicit none
-    integer :: i, p, q, r, distance
+    
+    integer :: i, p, q, r
     integer, dimension(:), allocatable :: list_of_primes
     integer, dimension(:), allocatable :: distance_list    
 
@@ -86,23 +100,19 @@
                 r = PreviousPrime(r)
             end if
         end do
-        distance = q - p
-        distance_list(i) = distance      
+        distance_list(i) = q - p  
     end do
 
-    print*, distance_list
+    print *, distance_list
 
-    print*, "average distance" 
+    print *, "Average Distance:", sum(distance_list) / size(distance_list)
 
-    print*, sum(distance_list) / size(distance_list)
+    print *, "Maximum Distance:", maxval(distance_list)
 
-    print*, "max distance"
+    print *, "Minimum Distance:", minval(distance_list)
 
-    print*, maxval(distance_list)
+    deallocate(distance_list)
+    deallocate(list_of_primes)
 
-    print*, "minimum distance"
-
-    print*, minval(distance_list)
-
-    end program Goldbach
+end program Goldbach
     
