@@ -1,6 +1,0 @@
-average distance
-          82
- max distance
-         792
- minimum distance
-           0
