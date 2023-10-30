@@ -1,8 +1,7 @@
-#include <iostream>
-#include <random>
 #include "person.hpp"
 #include "population.hpp"
-
+#include <iostream>
+#include <random>
 
 void body(int sickdays, int popsize, float transmission, int n_interactions,
           float percentvaccinated) {
@@ -52,7 +51,7 @@ void body(int sickdays, int popsize, float transmission, int n_interactions,
 }
 
 int main() {
-  
+
   for (int j = 0; j < 5; j++) {
     for (int i = 40; i >= 5; i = i - 5) {
       body(5, 40000, 0.05, i, 0);

@@ -1,11 +1,8 @@
-#include "person.cpp"
+#include "population.h"
 #include <cmath>
-#include <cstdint>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <random>
-#include <vector>
 
 class Population {
 private:

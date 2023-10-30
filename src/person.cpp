@@ -1,42 +1,39 @@
+#include "person.h"
 #include <cmath>
-#include <cstdint>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <vector>
-
-enum class Status { susceptible, sick, recovered, vaccinated };
 
 class Person {
 private:
-  Status status = Status::susceptible;
-  uint32_t ID = 0;
-  uint32_t sick_days = 0;
-  std::vector<Person> interactions;
+  Status Status = Status::Susceptible;
+  uint32_t ID_ = 0;
+  uint32_t SickDays_ = 0;
+  std::vector<Person> Interactions_;
 
 public:
-  Person() : status(Status::susceptible) { ID++; }
+  Person() : status(Status::Susceptible);
 
-  void setStatus(Status s) { status = s; }
+  void setStatus(Status s) { Status_ = s; }
 
-  Status getStatus() const { return status; }
-  
-  int getID() const { return ID; }
+  Status getStatus() const { return Status_; }
 
-  void setID(uint32_t id) { ID = id; }
+  int getID() const { return ID_; }
 
-  std::string status_to_string(Status status) {
+  void setID(uint32_t id) { ID_ = id; }
+
+  std::string statusToString(Status status) {
     switch (status) {
-    case Status::susceptible:
+    case Status::Susceptible:
       return "susceptible";
       break;
-    case Status::recovered:
+    case Status::Recovered:
       return "recovered";
       break;
-    case Status::vaccinated:
+    case Status::Vaccinated:
       return "vaccinated";
       break;
-    case Status::sick:
+    case Status::Sick:
       return "sick";
       break;
     }
@@ -44,25 +41,25 @@ public:
 
   void update() {
 
-    if (status == Status::sick) {
-      sick_days--;
-      if (sick_days == 0) {
-        status = Status::recovered;
+    if (status == Status::Sick) {
+      SickDays_--;
+      if (SickDays_ == 0) {
+        status = Status::Recovered;
       }
     }
   }
 
-  void infect(int days) // infect a person for n days
+  void infect(uint32_t days)
   {
-    if (status == Status::susceptible) {
-      sick_days = days;
-      status = Status::sick;
+    if (status == Status::Susceptible) {
+      SickDays_ = days;
+      Status_ = Status::Sick;
     }
   }
 
-  bool is_stable(void) // true if once sick but has recovered
+  bool is_stable() // true if once sick but has recovered
   {
-    return (status == Status::recovered);
+    return (Status == Status::Recovered);
   }
 
   // Population methods
