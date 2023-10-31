@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 enum class Status { Susceptible, Sick, Recovered, Vaccinated };
 
@@ -11,11 +12,11 @@ private:
   Status status_;
   uint32_t ID_;
   uint32_t sickDays_;
-  std::vector<Person> Interactions_;
+  std::vector<Person> interactions_;
 
 public:
 
-  Person();
+  Person(Status status, uint32_t ID, uint32_t SickDays, std::vector<Person> Interactions);
 
   void setStatus(Status s);
 
@@ -25,7 +26,7 @@ public:
 
   void setID(uint32_t id);
 
-  std::string statusToString(Status status);
+  std::string statusToString(Status status) const;
 
   void update();
 

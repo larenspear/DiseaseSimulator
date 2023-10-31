@@ -4,25 +4,18 @@
 #include <fstream>
 #include <iostream>
 
-class Person {
-private:
-  Status Status = Status::Susceptible;
-  uint32_t ID_ = 0;
-  uint32_t SickDays_ = 0;
-  std::vector<Person> Interactions_;
+Person::Person(Status status, uint32_t ID, uint32_t SickDays, std::vector<Person> Interactions) : status_(status), ID_(ID), sickDays_(SickDays), interactions_(Interactions) {}
 
-public:
-  Person() : status(Status::Susceptible);
 
-  void setStatus(Status s) { Status_ = s; }
+  Status Person::getStatus() const { return status_; }
 
-  Status getStatus() const { return Status_; }
+  void Person::setStatus(Status s) { status_ = s; }
 
-  int getID() const { return ID_; }
+  uint32_t Person::getID() const { return ID_; }
 
-  void setID(uint32_t id) { ID_ = id; }
+  void Person::setID(uint32_t id) { ID_ = id; }
 
-  std::string statusToString(Status status) {
+  std::string Person::statusToString(Status status) const {
     switch (status) {
     case Status::Susceptible:
       return "susceptible";
@@ -39,32 +32,25 @@ public:
     }
   }
 
-  void update() {
+  void Person::update() {
 
-    if (status == Status::Sick) {
-      SickDays_--;
-      if (SickDays_ == 0) {
-        status = Status::Recovered;
+    if (status_ == Status::Sick) {
+      sickDays_--;
+      if (sickDays_ == 0) {
+        status_ = Status::Recovered;
       }
     }
   }
 
-  void infect(uint32_t days)
+  void Person::infect(uint32_t days)
   {
-    if (status == Status::Susceptible) {
-      SickDays_ = days;
-      Status_ = Status::Sick;
+    if (status_ == Status::Susceptible) {
+      sickDays_ = days;
+      status_ = Status::Sick;
     }
   }
 
-  bool is_stable() // true if once sick but has recovered
-  {
-    return (Status == Status::Recovered);
+  bool Person::isStable() const { //True if sick then recovered
+    return (status_ == Status::Recovered);
   }
 
-  // Population methods
-
-  void addInteractionVector(std::vector<Person> p_interactions) {
-    interactions = p_interactions;
-  }
-};
