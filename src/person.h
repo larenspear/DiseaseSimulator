@@ -2,8 +2,8 @@
 #define PERSON_H
 
 #include <cstdint>
-#include <vector>
 #include <string>
+#include <vector>
 
 enum class Status { Susceptible, Sick, Recovered, Vaccinated };
 
@@ -15,8 +15,8 @@ private:
   std::vector<Person> interactions_;
 
 public:
-
-  Person(Status status, uint32_t ID, uint32_t SickDays, std::vector<Person> Interactions);
+  Person(Status status, uint32_t ID, uint32_t SickDays,
+         std::vector<Person> Interactions);
 
   void setStatus(Status s);
 
