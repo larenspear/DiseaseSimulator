@@ -39,6 +39,9 @@ std::string Person::statusToString(Status status) const {
   case Status::Sick:
     return "sick";
     break;
+  default:
+    return "susceptible";
+    break;
   }
 }
 

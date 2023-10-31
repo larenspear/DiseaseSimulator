@@ -8,37 +8,37 @@
 
 class Population {
 private:
-  std::vector<Person> people;
+  std::vector<Person> people_;
   uint32_t populationSize_;
   uint32_t numInteractions_;
   uint32_t daysSick_;
   float transmissionProb_;
   float percentVaccinated_;
 
-  uint32_t GetRandomIndex(uint32_t upperBound);
-
 public:
   Population(uint32_t populationSize_, uint32_t numInteractions_,
              float transmissionProb_, uint32_t daysSick_,
-             float percentVaccinated);
+             float percentVaccinated_);
 
-  void SetPopsize(int p);
-  void SetPercentVaccinated(float v);
-  float GetPercentVaccinated();
-  void SetTransmission(float prob);
-  uint32_t GetTransmission();
-  void SetNumInteractions(int interactions);
-  uint32_t GetNumInteractions();
-  void SetDaysSick(int d);
-  uint32_t GetDaysSick();
-  void PrintPeople();
-  void Random_infection();
-  std::vector<Person> GetPeopleV();
-  uint32_t CountInfected();
-  void Update();
+  uint32_t getRandomIndex(uint32_t upperBound) const;
+  void setPopsize(uint32_t p);
+  uint32_t getPopsize() const;
+  void setPercentVaccinated(float v);
+  float getPercentVaccinated() const;
+  void setTransmissionProb(float prob);
+  float getTransmissionProb() const;
+  void setNumInteractions(uint32_t interactions);
+  uint32_t getNumInteractions() const;
+  void setDaysSick(uint32_t d);
+  uint32_t getDaysSick() const;
+  void printPeople() const;
+  void randomInfection();
+  std::vector<Person> getPeople() const;
+  uint32_t countInfected() const;
+  void update();
   void infectRandomPerson();
-  void Vaccinate();
-  void LoopSimulation();
+  void vaccinate();
+  void loopSimulation();
 };
 
 #endif // POPULATION_H

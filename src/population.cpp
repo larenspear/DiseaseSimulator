@@ -3,32 +3,23 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <string>
 
-class Population {
-private:
-  std::vector<Person> P;
-  uint32_t population_size;
-  uint32_t n_interactions;
-  uint32_t days_sick;
-  float transmissionProb;
-  float percentvaccinated;
+Population::Population(uint32_t populationSize, uint32_t numInteractions,
+                       float transmissionProb, uint32_t daysSick,
+                       float percentVaccinated) :
+    populationSize_(populationSize),
+    numInteractions_(numInteractions), transmissionProb_(transmissionProb),
+    daysSick_(daysSick), percentVaccinated_(percentVaccinated) {}
 
-  uint32_t getRandomIndex(uint32_t upperBound) {
-    static std::random_device rd;
-    static std::mt19937 gen(rd()); // Mersenne Twister random number generator
-    std::uniform_int_distribution<> dis(0, upperBound - 1);
+uint32_t Population::getRandomIndex(uint32_t upperBound) const {
+  static std::random_device rd;
+  static std::mt19937 gen(rd()); // Mersenne Twister random number generator
+  std::uniform_int_distribution<> dis(0, upperBound - 1);
+  return dis(gen);
+}
+/*
 
-    return dis(gen);
-  }
-
-public:
-  Population() = default;
-
-  Population(
-      uint32_t numPeople, uint32_t n_interactions, float transmissionProb,
-      uint32_t days_sick,
-      float percentvaccinated) // population size, interactions, transmission
-                               // probability, days sick, %vax
   {
 
     std::vector<Person> SimulationPop(numPeople);
@@ -60,100 +51,123 @@ public:
     }
   }
 
-  void setPopsize(int p) { population_size = p; }
+*/
 
-  void setPercentVaccinated(float v) { percentvaccinated = v; }
+void Population::setPopsize(uint32_t p) {
+  populationSize_ = p;
+}
 
-  float getPercentVaccinated() { return percentvaccinated; }
+uint32_t Population::getPopsize() const {
+  return populationSize_;
+}
 
-  void setTransmission(float prob) { transmissionProb = prob; }
+void Population::setPercentVaccinated(float v) {
+  percentVaccinated_ = v;
+}
 
-  int getTransmission() { return transmissionProb; }
+float Population::getPercentVaccinated() const {
+  return percentVaccinated_;
+}
 
-  void setNumInteractions(int interactions) { n_interactions = interactions; }
+void Population::setTransmissionProb(float prob) {
+  transmissionProb_ = prob;
+}
 
-  int getNumInteractions() { return n_interactions; }
+float Population::getTransmissionProb() const {
+  return transmissionProb_;
+}
 
-  void setDaysSick(int d) { days_sick = d; }
+void Population::setNumInteractions(uint32_t interactions) {
+  numInteractions_ = interactions;
+}
 
-  int getDaysSick() { return days_sick; }
+uint32_t Population::getNumInteractions() const {
+  return numInteractions_;
+}
 
-  void printPeople() {
-    for (auto person : P) {
-      std::cout << person.getID() << "  "
-                << person.status_to_string(person.getStatus()) << std::endl;
+void Population::setDaysSick(uint32_t d) {
+  daysSick_ = d;
+}
+
+uint32_t Population::getDaysSick() const {
+  return daysSick_;
+}
+
+void Population::printPeople() const {
+  for (auto &person : people_) {
+    std::cout << person.getID() << "  "
+              << person.statusToString(person.getStatus()) << std::endl;
+  }
+}
+
+void Population::randomInfection() {
+  uint32_t randomPick;
+  randomPick = rand() % people_.size();
+  people_[randomPick].infect(daysSick_);
+}
+
+std::vector<Person> Population::getPeople() const {
+  return people_;
+}
+
+uint32_t Population::countInfected() const {
+  uint32_t totalInfected = 0;
+  for (auto &i : people_) {
+    if (i.getStatus() == Status::Sick) {
+      totalInfected = totalInfected + 1;
     }
   }
+  return totalInfected;
+}
 
-  void random_infection() {
-    int random_pick;
-    random_pick = rand() % P.size();
-    P[random_pick].infect(days_sick);
+void Population::update() {
+  std::vector<Person> newPeopleVector;
+  for (auto &i : newPeopleVector) {
+    i.update();
   }
+}
 
-  std::vector<Person> getPeopleV() { return P; }
-
-  int count_infected() {
-    int total_infected = 0;
-    for (auto &i : P) {
-      if (i.getStatus() == Status::sick) {
-        total_infected = total_infected + 1;
-      }
-    }
-    return total_infected;
-  }
-
-  void update() {
-    std::vector<Person> newPeopleVector;
-    for (auto &i : P) {
-      i.update();
+void Population::infectRandomPerson() {
+  float badLuck = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+  uint32_t unluckyPerson = rand() % people_.size();
+  if (badLuck > transmissionProb_) {
+    if (people_[unluckyPerson].getStatus() == Status::Susceptible) {
+      people_[unluckyPerson].infect(daysSick_);
     }
   }
+}
 
-  void infectRandom_person() {
-    float bad_luck = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-    int unlucky_person = rand() % P.size();
-    if (bad_luck > transmissionProb) {
-      if (P[unlucky_person].getStatus() == Status::susceptible) {
-        P[unlucky_person].infect(days_sick);
-      }
-    }
+void Population::vaccinate() {
+  float toVaccinate = static_cast<float>(populationSize_) * percentVaccinated_;
+
+  uint32_t q = 0;
+  while (toVaccinate > 0) {
+
+    people_[q].setStatus(Status::Vaccinated);
+    toVaccinate--;
+    q++;
   }
+}
 
-  void vaccinate() {
-    float population_f = population_size;
-    float to_vaccinate = population_f * percentvaccinated;
+void Population::loopSimulation() {
+  for (auto &it : people_) {
+    if (it.getStatus() == Status::Sick) {
+      for (uint32_t i = 0; i < numInteractions_; i++) {
+        uint32_t unluckyPerson = rand() % people_.size();
+        float badLuck =
+            static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+        do {
+          badLuck = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+          unluckyPerson = rand() % people_.size();
+        } while (people_[unluckyPerson].getID() == it.getID());
 
-    int q = 0;
-    while (to_vaccinate > 0) {
+        if (badLuck < transmissionProb_) {
+          if (people_[unluckyPerson].getStatus() == Status::Susceptible) {
 
-      P[q].setStatus(Status::vaccinated);
-      to_vaccinate = to_vaccinate - 1;
-      q++;
-    }
-  }
-
-  void loop_simulation() {
-    for (auto &it : P) {
-      if (it.getStatus() == Status::sick) {
-        for (int i = 0; i < n_interactions; i++) {
-          int unlucky_person = rand() % P.size();
-          float bad_luck =
-              static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-          do {
-            bad_luck =
-                static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-            unlucky_person = rand() % P.size();
-          } while (P[unlucky_person].getID() == it.getID());
-
-          if (bad_luck < transmissionProb) {
-            if (P[unlucky_person].getStatus() == Status::susceptible) {
-
-              P[unlucky_person].infect(days_sick);
-            }
+            people_[unluckyPerson].infect(daysSick_);
           }
         }
       }
     }
   }
-};
+}
