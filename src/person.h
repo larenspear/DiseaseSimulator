@@ -4,37 +4,31 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-
-enum class Status { Susceptible, Sick, Recovered, Vaccinated };
+#include <iostream>
 
 class Person {
 private:
-  Status status_;
   uint32_t ID_;
-  uint32_t sickDays_;
-  std::vector<Person> interactions_;
 
 public:
-  Person(Status status, uint32_t ID, uint32_t SickDays,
-         std::vector<Person> Interactions);
+
+  enum class Status { Susceptible, Sick, Recovered, Vaccinated };
+  std::string statusToString(Status status) const;
+  
+  Status status_ = Status::Susceptible;
+  uint32_t sickDays_ = 0;
+  
+  Person(uint32_t ID);
 
   void setStatus(Status s);
-
   Status getStatus() const;
-
   uint32_t getID() const;
-
-  void setID(uint32_t id);
-
-  std::string statusToString(Status status) const;
 
   void update();
 
   void infect(uint32_t days);
 
-  bool isStable() const;
-
-  void addInteractionVector(std::vector<Person> p_interactions);
+  void vaccinate();
 };
 
 #endif // PERSON_H
