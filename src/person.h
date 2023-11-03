@@ -14,7 +14,11 @@ public:
 
   enum class Status { Susceptible, Sick, Recovered, Vaccinated };
   std::string statusToString(Status status) const;
-  
+
+  std::vector<Person*> contacts_;
+
+  void addContact(Person& person);
+
   Status status_ = Status::Susceptible;
   uint32_t sickDays_ = 0;
   
@@ -27,6 +31,8 @@ public:
   void update();
 
   void infect(uint32_t days);
+
+  void interact();
 
   void vaccinate();
 };

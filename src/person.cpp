@@ -48,3 +48,7 @@ void Person::infect(uint32_t days) {
 void Person::vaccinate() {
   status_ = Status::Vaccinated;
 }
+
+void Person::addContact(Person& person){
+  contacts_.push_back(&person);
+}

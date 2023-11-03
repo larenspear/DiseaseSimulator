@@ -56,11 +56,17 @@ public:
   uint32_t countInfected() const;
   
   void update();
-  
+
+  void step();
+
   void infectRandomPerson();
+
+  void interact(Person& person1, Person* person2);  
   
   void vaccinate();
-  
+
+  void createNetwork();
+
   void loopSimulation();
 };
 

@@ -95,12 +95,44 @@ void Population::update() {
   }
 }
 
+void Population::interact(Person& person1, Person* person2){
+  if(person1.getStatus() != Person::Status::Sick && person2->getStatus() != Person::Status::Sick){
+    return;
+  } else if(person1.getStatus() == Person::Status::Sick && person2->getStatus() == Person::Status::Sick){
+    return;
+  } else if(person1.getStatus() == Person::Status::Sick){
+    if(getRandomProbability() < transmissionProb_){
+      person2->setStatus(Person::Status::Sick);
+    }
+  } else if(person2->getStatus() == Person::Status::Sick){
+      if(getRandomProbability() < transmissionProb_){
+        person1.setStatus(Person::Status::Sick);
+    }
+  }
+  return;
+  }
 void Population::infectRandomPerson() {
   uint32_t unluckyPerson = getRandomIndex(populationSize_);
   float badLuck = getRandomProbability();
   if (badLuck > transmissionProb_) {
     if (people_[unluckyPerson].getStatus() == Person::Status::Susceptible) {
       people_[unluckyPerson].infect(daysSick_);
+    }
+  }
+}
+
+void Population::createNetwork(){
+  for (int i = 0; i < populationSize_; ++i) {
+        if (i < populationSize_ - 1) {
+            people_[i].addContact(people_[i + 1]);
+        }
+    }
+}
+
+void Population::step(){
+  for(auto& person1 : people_){
+    for(auto& person2 : person1.contacts_){
+      interact(person1, person2);
     }
   }
 }
