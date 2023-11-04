@@ -16,7 +16,6 @@ private:
   float percentVaccinated_;
 
 public:
-
   Population();
 
   Population(uint32_t populationSize, uint32_t numInteractions,
@@ -28,41 +27,41 @@ public:
   float getRandomProbability();
 
   void setPopulationSize(uint32_t p);
-  
+
   uint32_t getPopulationSize() const;
-  
+
   void setPercentVaccinated(float v);
-  
+
   float getPercentVaccinated() const;
-  
+
   void setTransmissionProb(float prob);
-  
+
   float getTransmissionProb() const;
-  
+
   void setNumInteractions(uint32_t interactions);
-  
+
   uint32_t getNumInteractions() const;
-  
+
   void setDaysSick(uint32_t d);
-  
+
   uint32_t getDaysSick() const;
-  
+
   void printPeople() const;
-  
+
   void randomInfection();
-  
-  const std::vector<Person>& getPeople() const;
-  
+
+  const std::vector<Person> &getPeople() const;
+
   uint32_t countInfected() const;
-  
+
   void update();
 
   void step();
 
   void infectRandomPerson();
 
-  void interact(Person& person1, Person* person2);  
-  
+  void interact(Person &person1, Person *person2);
+
   void vaccinate();
 
   void createNetwork();

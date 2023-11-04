@@ -4,27 +4,27 @@
 #include <fstream>
 #include <iostream>
 
-Person::Person(uint32_t ID) : ID_(ID), status_(Status::Susceptible), sickDays_(0) {}
-  
-Person::Status Person::getStatus() const {
-  return status_;
-}
+Person::Person(uint32_t ID)
+    : ID_(ID), status_(Status::Susceptible), sickDays_(0) {}
 
-void Person::setStatus(Status s) {
-  status_ = s;
-}
+Person::Status Person::getStatus() const { return status_; }
 
-uint32_t Person::getID() const {
-  return ID_;
-}
+void Person::setStatus(Status s) { status_ = s; }
+
+uint32_t Person::getID() const { return ID_; }
 
 std::string Person::statusToString(Status status) const {
   switch (status) {
-  case Status::Susceptible: return "susceptible";
-  case Status::Recovered: return "recovered";
-  case Status::Vaccinated: return "vaccinated";
-  case Status::Sick: return "sick";
-  default: return "unknown";
+  case Status::Susceptible:
+    return "susceptible";
+  case Status::Recovered:
+    return "recovered";
+  case Status::Vaccinated:
+    return "vaccinated";
+  case Status::Sick:
+    return "sick";
+  default:
+    return "unknown";
   }
 }
 
@@ -45,10 +45,6 @@ void Person::infect(uint32_t days) {
   }
 }
 
-void Person::vaccinate() {
-  status_ = Status::Vaccinated;
-}
+void Person::vaccinate() { status_ = Status::Vaccinated; }
 
-void Person::addContact(Person& person){
-  contacts_.push_back(&person);
-}
+void Person::addContact(Person &person) { contacts_.push_back(&person); }

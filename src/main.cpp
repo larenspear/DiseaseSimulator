@@ -1,45 +1,68 @@
-#include <iostream>
 #include "population.h"
+#include <iostream>
 #include <vector>
 
-//Main is just tests for now. Simulation logic incoming!
+#define POP 10
+#define TP 0.01F
+#define DS 5
+#define PV 0.1
 
-void body(uint32_t populationSize, uint32_t numInteractions, float transmissionProb, uint32_t daysSick, float percentVaccinated){
-  
-  Population population(
-      populationSize, numInteractions, transmissionProb, daysSick, percentVaccinated);
+// Main is just tests for now. Simulation logic incoming!
+
+void body(uint32_t populationSize, uint32_t numInteractions,
+          float transmissionProb, uint32_t daysSick, float percentVaccinated) {
+
+  Population population(populationSize, numInteractions, transmissionProb,
+                        daysSick, percentVaccinated);
 
   uint32_t day = 1;
   uint32_t peak = 0;
 
-  float toVaccinate = static_cast<float>(populationSize) * population.getPercentVaccinated();
+  float toVaccinate =
+      static_cast<float>(populationSize) * population.getPercentVaccinated();
 
   population.vaccinate();
 
-  while(population.countInfected() == 0){
+  while (population.countInfected() == 0) {
     population.randomInfection();
   }
 
-  while(population.countInfected() > 0){
+  population.createNetwork();
+
+  while (population.countInfected() > 0) {
     day++;
-    population.update();
-    if(population.countInfected() > peak){
+    population.step();
+
+    if (population.countInfected() > peak) {
       peak = population.countInfected();
     }
   }
-
 }
 
+int main() {
 
-int main(){
+  Population myPop(POP, 0, TP, DS, PV);
 
-  Person myPerson(1);
+  std::cout << "worked" << std::endl;
 
-  std::cout << myPerson.statusToString(myPerson.getStatus()) << std::endl;
+  uint32_t day = 1;
+  uint32_t peak = 0;
 
-  Population myPop;
+  std::cout << "worked" << std::endl;
 
-  std::cout << std::to_string(myPop.getPopulationSize()) << std::endl;
+  myPop.vaccinate();
+
+  // myPop.printPeople();
+
+  myPop.createNetwork();
+
+  myPop.randomInfection();
+
+  while (myPop.countInfected() > 0) {
+    myPop.step();
+  }
+
+  myPop.printPeople();
 
   return 0;
 }
